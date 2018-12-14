@@ -18,13 +18,17 @@ class ChatConsumer(AsyncConsumer):
         thread_obj= await self.get_thread(me,other_user)
         print(thread_obj)
 
-        await self.send({
-        "type":"websocket.send",
-        "text":"helloooo"
-        })
-
     async def websocket_receive(self,event):
         print("recieved",event)
+        front_text=event.get('text',None)
+        if front_text is not None:
+            loaded_dict_data=json.loads(front_text)
+            msg=loaded_dict_data.get('message')
+            print(msg)
+            await self.send({
+            "type":"websocket.send",
+            "text":msg
+            })
 
     async def websocket_disconnect(self,event):
         #when the websocket disconnects
